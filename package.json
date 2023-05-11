@@ -1,5 +1,5 @@
 {
-  "name": "chess.js",
+  "name": "@spillsjakk/chess.js",
   "version": "1.0.0-beta.6",
   "license": "BSD-2-Clause",
   "main": "dist/chess.js",

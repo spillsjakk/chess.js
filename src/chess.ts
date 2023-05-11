@@ -1097,7 +1097,7 @@ export class Chess {
   }
 
   _moves({
-    legal = true,
+    legal = false,
     piece = undefined,
     square = undefined,
   }: {

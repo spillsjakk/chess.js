@@ -49,8 +49,13 @@ export type Square =
     'a2' | 'b2' | 'c2' | 'd2' | 'e2' | 'f2' | 'g2' | 'h2' |
     'a1' | 'b1' | 'c1' | 'd1' | 'e1' | 'f1' | 'g1' | 'h1'
 
-export const DEFAULT_POSITION =
-  'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
+export const INITIAL_BOARD_FEN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR'
+export const INITIAL_EPD = INITIAL_BOARD_FEN + ' w KQkq -'
+export const INITIAL_FEN = INITIAL_EPD + ' 0 1'
+export const PAWN_VS_PAWN_INITIAL_BOARD_FEN = '8/pppppppp/8/8/8/8/PPPPPPPP/8'
+export const PAWN_VS_PAWN_INITIAL_EPD =
+  PAWN_VS_PAWN_INITIAL_BOARD_FEN + ' w - -'
+export const PAWN_VS_PAWN_INITIAL_FEN = PAWN_VS_PAWN_INITIAL_EPD + ' 0 1'
 
 export type Piece = {
   color: Color
@@ -392,9 +397,6 @@ export function validateFen(fen: string) {
   ]
 
   for (const { color, regex } of kings) {
-    if (!regex.test(tokens[0])) {
-      return { ok: false, error: `Invalid FEN: missing ${color} king` }
-    }
 
     if ((tokens[0].match(regex) || []).length > 1) {
       return { ok: false, error: `Invalid FEN: too many ${color} kings` }
@@ -526,8 +528,10 @@ export class Chess {
   private _history: History[] = []
   private _comments: Record<string, string> = {}
   private _castling: Record<Color, number> = { w: 0, b: 0 }
+  protected defaultPosition: string;
 
-  constructor(fen = DEFAULT_POSITION) {
+  constructor(fen = INITIAL_FEN) {
+    this.defaultPosition = fen;
     this.load(fen)
   }
 
@@ -721,7 +725,7 @@ export class Chess {
   private _updateSetup(fen: string) {
     if (this._history.length > 0) return
 
-    if (fen !== DEFAULT_POSITION) {
+    if (fen !== this.defaultPosition) {
       this._header['SetUp'] = '1'
       this._header['FEN'] = fen
     } else {
@@ -731,7 +735,7 @@ export class Chess {
   }
 
   reset() {
-    this.load(DEFAULT_POSITION)
+    this.load(this.defaultPosition)
   }
 
   get(square: Square) {
@@ -2319,5 +2323,11 @@ export class Chess {
 
   moveNumber() {
     return this._moveNumber
+  }
+}
+
+export class PawnVsPawn extends Chess {
+  constructor() {
+    super(PAWN_VS_PAWN_INITIAL_FEN)
   }
 }

@@ -237,7 +237,7 @@ const PIECE_MASKS = { p: 0x1, n: 0x2, b: 0x4, r: 0x8, q: 0x10, k: 0x20 }
 
 const SYMBOLS = 'pnbrqkPNBRQK'
 
-const PROMOTIONS: PieceSymbol[] = [KNIGHT, BISHOP, ROOK, QUEEN]
+const PROMOTIONS: PieceSymbol[] = [KNIGHT, BISHOP, ROOK, QUEEN, PAWN]
 
 const RANK_1 = 7
 const RANK_2 = 6
@@ -2329,5 +2329,11 @@ export class Chess {
 export class PawnVsPawn extends Chess {
   constructor() {
     super(PAWN_VS_PAWN_INITIAL_FEN)
+  }
+  pgn({
+    newline = '\n',
+    maxWidth = 0,
+  }: { newline?: string; maxWidth?: number; } = {}) {
+    return super.pgn().replace("=P", ""); // ignore pawn promotion
   }
 }
